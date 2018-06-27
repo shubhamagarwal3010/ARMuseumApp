@@ -12,30 +12,27 @@ package com.vuforia.samples.SampleApplication.utils;
 import java.nio.Buffer;
 
 
-public class Teapot extends MeshObject
-{
-    
+public class Teapot extends MeshObject {
+
     private Buffer mVertBuff;
     private Buffer mTexCoordBuff;
     private Buffer mNormBuff;
     private Buffer mIndBuff;
-    
+
     private int indicesNumber = 0;
     private int verticesNumber = 0;
-    
-    
-    public Teapot()
-    {
+
+
+    public Teapot() {
         setVerts();
         setTexCoords();
         setNorms();
         setIndices();
     }
-    
-    
-    private void setVerts()
-    {
-        double[] TEAPOT_VERTS = { 11.222200, 0.110300, 20.030291, 10.302300,
+
+
+    private void setVerts() {
+        double[] TEAPOT_VERTS = {11.222200, 0.110300, 20.030291, 10.302300,
                 -4.461498, 20.030291, 10.152300, -4.397198, 20.644890,
                 11.059500, 0.110900, 20.644890, 11.059500, 0.110900, 20.644890,
                 10.152300, -4.397198, 20.644890, 10.326300, -4.471797,
@@ -488,15 +485,14 @@ public class Teapot extends MeshObject
                 1.617799, 7.150197, -16.664600, 2.085099, 6.291297, -23.301300,
                 1.640799, 15.034092, -22.940701, 1.639499, 13.172593,
                 -21.810101, 1.635499, 11.037194, -19.837999, 1.628499,
-                8.929396, -16.952299, 1.617799, 7.150197 };
+                8.929396, -16.952299, 1.617799, 7.150197};
         mVertBuff = fillBuffer(TEAPOT_VERTS);
         verticesNumber = TEAPOT_VERTS.length / 3;
     }
-    
-    
-    private void setTexCoords()
-    {
-        double[] TEAPOT_TEX_COORDS = { 0.608828, 0.354913, 0.609037, 0.414650,
+
+
+    private void setTexCoords() {
+        double[] TEAPOT_TEX_COORDS = {0.608828, 0.354913, 0.609037, 0.414650,
                 0.627128, 0.412296, 0.626946, 0.353747, 0.626946, 0.353747,
                 0.627128, 0.412296, 0.645212, 0.412296, 0.645121, 0.354854,
                 0.645121, 0.354854, 0.645212, 0.412296, 0.665996, 0.413114,
@@ -770,15 +766,14 @@ public class Teapot extends MeshObject
                 0.173995, 0.485885, 0.174243, 0.394528, 0.176411, 0.374901,
                 0.180175, 0.298414, 0.184503, 0.259230, 0.189013, 0.199932,
                 0.195504, 0.141216, 0.182330, 0.579904, 0.174024, 0.485925,
-                0.174243, 0.394528, 0.180175, 0.298414, 0.189013, 0.199932 };
+                0.174243, 0.394528, 0.180175, 0.298414, 0.189013, 0.199932};
         mTexCoordBuff = fillBuffer(TEAPOT_TEX_COORDS);
-        
+
     }
-    
-    
-    private void setNorms()
-    {
-        double[] TEAPOT_NORMS = { -0.964496, 0.067011, -0.255454, -0.865037,
+
+
+    private void setNorms() {
+        double[] TEAPOT_NORMS = {-0.964496, 0.067011, -0.255454, -0.865037,
                 0.431362, -0.256198, -0.914727, 0.312709, -0.255904, -0.964979,
                 -0.059958, -0.255382, -0.734604, 0.051028, 0.676574, -0.657992,
                 0.328017, 0.677828, -0.696209, 0.237894, 0.677274, -0.735103,
@@ -1197,14 +1192,13 @@ public class Teapot extends MeshObject
                 0.306919, 0.804870, 0.507922, 0.312876, 0.786382, 0.532647,
                 0.948597, 0.258566, 0.182505, 0.897892, 0.253509, 0.359894,
                 0.773683, 0.222907, 0.593066, 0.590633, 0.196416, 0.782671,
-                0.516476, 0.182725, 0.836579 };
+                0.516476, 0.182725, 0.836579};
         mNormBuff = fillBuffer(TEAPOT_NORMS);
     }
-    
-    
-    private void setIndices()
-    {
-        short[] TEAPOT_INDICES = { 0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 8, 9,
+
+
+    private void setIndices() {
+        short[] TEAPOT_INDICES = {0, 1, 2, 2, 3, 0, 4, 5, 6, 6, 7, 4, 8, 9,
                 10, 10, 11, 8, 11, 10, 12, 12, 13, 11, 1, 14, 15, 15, 2, 1, 5,
                 16, 17, 17, 6, 5, 9, 18, 19, 19, 10, 9, 10, 19, 20, 20, 12, 10,
                 14, 21, 22, 22, 15, 14, 16, 23, 24, 24, 17, 16, 18, 25, 26, 26,
@@ -1451,31 +1445,27 @@ public class Teapot extends MeshObject
                 758, 812, 811, 813, 813, 814, 812, 814, 813, 815, 815, 816,
                 814, 816, 815, 817, 817, 818, 816, 819, 765, 768, 768, 820,
                 819, 820, 768, 770, 770, 821, 820, 821, 770, 772, 772, 822,
-                821, 822, 772, 774, 774, 823, 822 };
+                821, 822, 772, 774, 774, 823, 822};
         mIndBuff = fillBuffer(TEAPOT_INDICES);
         indicesNumber = TEAPOT_INDICES.length;
     }
-    
-    
-    public int getNumObjectIndex()
-    {
+
+
+    public int getNumObjectIndex() {
         return indicesNumber;
     }
-    
-    
+
+
     @Override
-    public int getNumObjectVertex()
-    {
+    public int getNumObjectVertex() {
         return verticesNumber;
     }
-    
-    
+
+
     @Override
-    public Buffer getBuffer(BUFFER_TYPE bufferType)
-    {
+    public Buffer getBuffer(BUFFER_TYPE bufferType) {
         Buffer result = null;
-        switch (bufferType)
-        {
+        switch (bufferType) {
             case BUFFER_TYPE_VERTEX:
                 result = mVertBuff;
                 break;
@@ -1489,10 +1479,10 @@ public class Teapot extends MeshObject
                 result = mIndBuff;
             default:
                 break;
-        
+
         }
-        
+
         return result;
     }
-    
+
 }

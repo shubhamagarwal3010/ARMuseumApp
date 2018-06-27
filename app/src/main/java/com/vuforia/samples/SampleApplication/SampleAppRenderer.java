@@ -35,56 +35,49 @@ import com.vuforia.Vec4I;
 import com.vuforia.VideoBackgroundConfig;
 import com.vuforia.VideoMode;
 import com.vuforia.ViewList;
-import com.vuforia.samples.SampleApplication.utils.VideoBackgroundShader;
 import com.vuforia.samples.SampleApplication.utils.SampleUtils;
+import com.vuforia.samples.SampleApplication.utils.VideoBackgroundShader;
 
 public class SampleAppRenderer {
 
+    static final float VIRTUAL_FOV_Y_DEGS = 85.0f;
+    static final float M_PI = 3.14159f;
     private static final String LOGTAG = "SampleAppRenderer";
-
+    float mNearPlane = -1.0f;
+    float mFarPlane = -1.0f;
+    GLTextureUnit videoBackgroundTex = null;
     private RenderingPrimitives mRenderingPrimitives = null;
     private SampleAppRendererControl mRenderingInterface = null;
     private Activity mActivity = null;
-
     private Renderer mRenderer = null;
     private int currentView = VIEW.VIEW_SINGULAR;
-    float mNearPlane = -1.0f;
-    float mFarPlane = -1.0f;
-
-    GLTextureUnit videoBackgroundTex = null;
-
     // Shader user to render the video background on AR mode
     private int vbShaderProgramID = 0;
     private int vbTexSampler2DHandle = 0;
     private int vbVertexHandle = 0;
     private int vbTexCoordHandle = 0;
     private int vbProjectionMatrixHandle = 0;
-
     // Display size of the device:
     private int mScreenWidth = 0;
     private int mScreenHeight = 0;
-
     // Stores orientation
     private boolean mIsPortrait = false;
 
     public SampleAppRenderer(SampleAppRendererControl renderingInterface, Activity activity, int deviceMode,
-                             boolean stereo, float nearPlane, float farPlane)
-    {
+                             boolean stereo, float nearPlane, float farPlane) {
         mActivity = activity;
 
         mRenderingInterface = renderingInterface;
         mRenderer = Renderer.getInstance();
 
-        if(farPlane < nearPlane)
-        {
+        if (farPlane < nearPlane) {
             Log.e(LOGTAG, "Far plane should be greater than near plane");
             throw new IllegalArgumentException();
         }
 
         setNearFarPlanes(nearPlane, farPlane);
 
-        if(deviceMode != Device.MODE.MODE_AR && deviceMode != Device.MODE.MODE_VR)
-        {
+        if (deviceMode != Device.MODE.MODE_AR && deviceMode != Device.MODE.MODE_VR) {
             Log.e(LOGTAG, "Device mode should be Device.MODE.MODE_AR or Device.MODE.MODE_VR");
             throw new IllegalArgumentException();
         }
@@ -94,37 +87,30 @@ public class SampleAppRenderer {
         device.setMode(deviceMode); // Select if we will be in AR or VR mode
     }
 
-    public void onSurfaceCreated()
-    {
+    public void onSurfaceCreated() {
         initRendering();
     }
 
-    public void onConfigurationChanged(boolean isARActive)
-    {
+    public void onConfigurationChanged(boolean isARActive) {
         updateActivityOrientation();
         storeScreenDimensions();
 
-        if(isARActive)
+        if (isARActive)
             configureVideoBackground();
 
         updateRenderingPrimitives();
     }
 
-
-    public synchronized void updateRenderingPrimitives()
-    {
+    public synchronized void updateRenderingPrimitives() {
         mRenderingPrimitives = Device.getInstance().getRenderingPrimitives();
     }
 
-
-    void initRendering()
-    {
+    void initRendering() {
         vbShaderProgramID = SampleUtils.createProgramFromShaderSrc(VideoBackgroundShader.VB_VERTEX_SHADER,
                 VideoBackgroundShader.VB_FRAGMENT_SHADER);
 
         // Rendering configuration for video background
-        if (vbShaderProgramID > 0)
-        {
+        if (vbShaderProgramID > 0) {
             // Activate shader:
             GLES20.glUseProgram(vbShaderProgramID);
 
@@ -149,8 +135,7 @@ public class SampleAppRenderer {
     // Main rendering method
     // The method setup state for rendering, setup 3D transformations required for AR augmentation
     // and call any specific rendering method
-    public void render()
-    {
+    public void render() {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         State state;
         // Get our current state
@@ -173,8 +158,7 @@ public class SampleAppRenderer {
         ViewList viewList = mRenderingPrimitives.getRenderingViews();
 
         // Cycle through the view list
-        for (int v = 0; v < viewList.getNumViews(); v++)
-        {
+        for (int v = 0; v < viewList.getNumViews(); v++) {
             // Get the view id
             int viewID = viewList.getView(v);
 
@@ -191,8 +175,8 @@ public class SampleAppRenderer {
             // Get projection matrix for the current view. COORDINATE_SYSTEM_CAMERA used for AR and
             // COORDINATE_SYSTEM_WORLD for VR
             Matrix34F projMatrix = mRenderingPrimitives.getProjectionMatrix(viewID,
-                                                                            COORDINATE_SYSTEM_TYPE.COORDINATE_SYSTEM_CAMERA,
-                                                                            state.getCameraCalibration());
+                    COORDINATE_SYSTEM_TYPE.COORDINATE_SYSTEM_CAMERA,
+                    state.getCameraCalibration());
 
             // Create GL matrix setting up the near and far planes
             float rawProjectionMatrixGL[] = Tool.convertPerspectiveProjection2GLMatrix(
@@ -214,29 +198,26 @@ public class SampleAppRenderer {
             // Call renderFrame from the app renderer class which implements SampleAppRendererControl
             // This will be called for MONO, LEFT and RIGHT views, POSTPROCESS will not render the
             // frame
-            if(currentView != VIEW.VIEW_POSTPROCESS)
+            if (currentView != VIEW.VIEW_POSTPROCESS)
                 mRenderingInterface.renderFrame(state, projectionMatrix);
         }
 
         mRenderer.end();
     }
 
-    public void setNearFarPlanes(float near, float far)
-    {
+    public void setNearFarPlanes(float near, float far) {
         mNearPlane = near;
         mFarPlane = far;
     }
 
-    public void renderVideoBackground()
-    {
-        if(currentView == VIEW.VIEW_POSTPROCESS)
+    public void renderVideoBackground() {
+        if (currentView == VIEW.VIEW_POSTPROCESS)
             return;
 
         int vbVideoTextureUnit = 0;
         // Bind the video bg texture and get the Texture ID from Vuforia
         videoBackgroundTex.setTextureUnit(vbVideoTextureUnit);
-        if (!mRenderer.updateVideoBackgroundTexture(videoBackgroundTex))
-        {
+        if (!mRenderer.updateVideoBackgroundTexture(videoBackgroundTex)) {
             Log.e(LOGTAG, "Unable to update video background texture");
             return;
         }
@@ -249,7 +230,7 @@ public class SampleAppRenderer {
         // This should not be applied on optical see-through devices, as there is no video background,
         // and the calibration ensures that the augmentation matches the real world
         if (Device.getInstance().isViewerActive()) {
-            float sceneScaleFactor = (float)getSceneScaleFactor();
+            float sceneScaleFactor = (float) getSceneScaleFactor();
             Matrix.scaleM(vbProjectionMatrix, 0, sceneScaleFactor, sceneScaleFactor, 1.0f);
         }
 
@@ -284,12 +265,7 @@ public class SampleAppRenderer {
         SampleUtils.checkGLError("Rendering of the video background failed");
     }
 
-
-    static final float VIRTUAL_FOV_Y_DEGS = 85.0f;
-    static final float M_PI = 3.14159f;
-
-    double getSceneScaleFactor()
-    {
+    double getSceneScaleFactor() {
         // Get the y-dimension of the physical camera field of view
         Vec2F fovVector = CameraDevice.getInstance().getCameraCalibration().getFieldOfViewRads();
         float cameraFovYRads = fovVector.getData()[1];
@@ -313,8 +289,7 @@ public class SampleAppRenderer {
     }
 
     // Configures the video mode and sets offsets for the camera's image
-    public void configureVideoBackground()
-    {
+    public void configureVideoBackground() {
         // Stores viewport to be used for rendering purposes
         int[] mViewport;
 
@@ -330,26 +305,22 @@ public class SampleAppRenderer {
         // preserve the height and scale width and vice versa if it is landscape, we preserve
         // the width and we check if the selected values fill the screen, otherwise we invert
         // the selection
-        if (mIsPortrait)
-        {
+        if (mIsPortrait) {
             xSize = (int) (vm.getHeight() * (mScreenHeight / (float) vm
                     .getWidth()));
             ySize = mScreenHeight;
 
-            if (xSize < mScreenWidth)
-            {
+            if (xSize < mScreenWidth) {
                 xSize = mScreenWidth;
                 ySize = (int) (mScreenWidth * (vm.getWidth() / (float) vm
                         .getHeight()));
             }
-        } else
-        {
+        } else {
             xSize = mScreenWidth;
             ySize = (int) (vm.getHeight() * (mScreenWidth / (float) vm
                     .getWidth()));
 
-            if (ySize < mScreenHeight)
-            {
+            if (ySize < mScreenHeight) {
                 xSize = (int) (mScreenHeight * (vm.getWidth() / (float) vm
                         .getHeight()));
                 ySize = mScreenHeight;
@@ -377,8 +348,7 @@ public class SampleAppRenderer {
 
 
     // Stores screen dimensions
-    private void storeScreenDimensions()
-    {
+    private void storeScreenDimensions() {
         // Query display dimensions:
         Point size = new Point();
         mActivity.getWindowManager().getDefaultDisplay().getRealSize(size);
@@ -388,12 +358,10 @@ public class SampleAppRenderer {
 
 
     // Stores the orientation depending on the current resources configuration
-    private void updateActivityOrientation()
-    {
+    private void updateActivityOrientation() {
         Configuration config = mActivity.getResources().getConfiguration();
 
-        switch (config.orientation)
-        {
+        switch (config.orientation) {
             case Configuration.ORIENTATION_PORTRAIT:
                 mIsPortrait = true;
                 break;

@@ -9,6 +9,8 @@ countries.
 
 package com.vuforia.samples.SampleApplication.utils;
 
+import android.content.res.AssetManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,77 +19,65 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import android.content.res.AssetManager;
 
+public class SampleApplication3DModel extends MeshObject {
 
-public class SampleApplication3DModel extends MeshObject
-{
-    
+    int numVerts = 0;
     private ByteBuffer verts;
     private ByteBuffer textCoords;
     private ByteBuffer norms;
-    int numVerts = 0;
-    
-    
+
     public void loadModel(AssetManager assetManager, String filename)
-        throws IOException
-    {
+            throws IOException {
         InputStream is = null;
-        try
-        {
+        try {
             is = assetManager.open(filename);
             BufferedReader reader = new BufferedReader(
-                new InputStreamReader(is));
-            
+                    new InputStreamReader(is));
+
             String line = reader.readLine();
-            
+
             int floatsToRead = Integer.parseInt(line);
             numVerts = floatsToRead / 3;
-            
+
             verts = ByteBuffer.allocateDirect(floatsToRead * 4);
             verts.order(ByteOrder.nativeOrder());
-            for (int i = 0; i < floatsToRead; i++)
-            {
+            for (int i = 0; i < floatsToRead; i++) {
                 verts.putFloat(Float.parseFloat(reader.readLine()));
             }
             verts.rewind();
-            
+
             line = reader.readLine();
             floatsToRead = Integer.parseInt(line);
-            
+
             norms = ByteBuffer.allocateDirect(floatsToRead * 4);
             norms.order(ByteOrder.nativeOrder());
-            for (int i = 0; i < floatsToRead; i++)
-            {
+            for (int i = 0; i < floatsToRead; i++) {
                 norms.putFloat(Float.parseFloat(reader.readLine()));
             }
             norms.rewind();
-            
+
             line = reader.readLine();
             floatsToRead = Integer.parseInt(line);
-            
+
             textCoords = ByteBuffer.allocateDirect(floatsToRead * 4);
             textCoords.order(ByteOrder.nativeOrder());
-            for (int i = 0; i < floatsToRead; i++)
-            {
+            for (int i = 0; i < floatsToRead; i++) {
                 textCoords.putFloat(Float.parseFloat(reader.readLine()));
             }
             textCoords.rewind();
-            
-        } finally
-        {
+
+        } finally {
             if (is != null)
                 is.close();
         }
     }
-    
-    
+
+
     @Override
-    public Buffer getBuffer(BUFFER_TYPE bufferType)
-    {
+    public Buffer getBuffer(BUFFER_TYPE bufferType) {
         Buffer result = null;
-        switch (bufferType)
-        {
+        switch (bufferType) {
             case BUFFER_TYPE_VERTEX:
                 result = verts;
                 break;
@@ -101,19 +91,17 @@ public class SampleApplication3DModel extends MeshObject
         }
         return result;
     }
-    
-    
+
+
     @Override
-    public int getNumObjectVertex()
-    {
+    public int getNumObjectVertex() {
         return numVerts;
     }
-    
-    
+
+
     @Override
-    public int getNumObjectIndex()
-    {
+    public int getNumObjectIndex() {
         return 0;
     }
-    
+
 }

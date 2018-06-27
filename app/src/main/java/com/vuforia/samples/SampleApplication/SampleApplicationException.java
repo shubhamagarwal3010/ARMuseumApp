@@ -10,11 +10,8 @@ countries.
 package com.vuforia.samples.SampleApplication;
 
 // Used to send back to the activity any error during vuforia processes
-public class SampleApplicationException extends Exception
-{
-    
-    private static final long serialVersionUID = 2L;
-    
+public class SampleApplicationException extends Exception {
+
     public static final int INITIALIZATION_FAILURE = 0;
     public static final int VUFORIA_ALREADY_INITIALIZATED = 1;
     public static final int TRACKERS_INITIALIZATION_FAILURE = 2;
@@ -24,27 +21,24 @@ public class SampleApplicationException extends Exception
     public static final int CAMERA_INITIALIZATION_FAILURE = 6;
     public static final int SET_FOCUS_MODE_FAILURE = 7;
     public static final int ACTIVATE_FLASH_FAILURE = 8;
-    
+    private static final long serialVersionUID = 2L;
     private int mCode = -1;
     private String mString = "";
-    
-    
-    public SampleApplicationException(int code, String description)
-    {
+
+
+    public SampleApplicationException(int code, String description) {
         super(description);
         mCode = code;
         mString = description;
     }
-    
-    
-    public int getCode()
-    {
+
+
+    public int getCode() {
         return mCode;
     }
-    
-    
-    public String getString()
-    {
+
+
+    public String getString() {
         return mString;
     }
 }
