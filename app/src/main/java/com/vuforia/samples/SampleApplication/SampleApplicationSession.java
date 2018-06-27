@@ -25,6 +25,7 @@ import com.vuforia.INIT_FLAGS;
 import com.vuforia.State;
 import com.vuforia.Vuforia;
 import com.vuforia.Vuforia.UpdateCallbackInterface;
+import com.vuforia.samples.AppHelper;
 import com.vuforia.samples.VideoPlayback.R;
 
 
@@ -365,7 +366,7 @@ public class SampleApplicationSession implements UpdateCallbackInterface {
         protected Boolean doInBackground(Void... params) {
             // Prevent the onDestroy() method to overlap with initialization:
             synchronized (mLifecycleLock) {
-                Vuforia.setInitParameters(mActivity, mVuforiaFlags, "AbrbsSX/////AAABmYY5dnYdvkSlrhnBIQoxmZ5EPT68W+LpxjevQNu+hRw0z4uZbWuEljqdk53yhkVFByyjpdDPA5nUexEJUCQ/OLvjU94nW6n+Ii2MenlQNzPqb9CQGQfIeS0/KuO4JDDbCiV+lkx/jWkkYMlW1uGpoptLA6t/0rUF0NJNNOp9y1iQjZZSY0CGjZ2Di/Yijm0+WqDZTjfXOh5CjOCy1CVoUu3l17MDFj3tfiw+MDnbksOjhZDpe0dkJkDL1BUYEUbKjlF65b9qD5qtl5LXwm5RUN/HZ+qsCRls6U+oKzlk4F/3RTQ3RhGXTjUruxNfJx/+6QE7svxCVccwmcWoRivZCdO9UgQ9avTAHcs2ib9nRVHj");
+                Vuforia.setInitParameters(mActivity, mVuforiaFlags, AppHelper.LICENSE_KEY);
                 do {
                     // Vuforia.init() blocks until an initialization step is
                     // complete, then it proceeds to the next step and reports
